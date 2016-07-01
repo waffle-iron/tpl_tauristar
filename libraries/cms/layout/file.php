@@ -174,6 +174,9 @@ class JLayoutFile extends JLayoutBase
 
 		$this->addDebugMessage('<strong>Include Paths:</strong> ' . print_r($includePaths, true));
 
+		$framework = JFactory::getApplication()->getTemplate(true)->params->get('framework');
+		$layoutPath = str_replace('.', '/', $this->layoutId);
+
 		// Search for suffixed versions. Example: tags.j31.php
 		if ($suffixes)
 		{
@@ -181,38 +184,56 @@ class JLayoutFile extends JLayoutBase
 
 			foreach ($suffixes as $suffix)
 			{
-				$rawPath  = str_replace('.', '/', $this->layoutId) . '.' . $suffix . '.php';
-				$this->addDebugMessage('<strong>Searching layout for:</strong> ' . $rawPath);
-
-				if ($foundLayout = JPath::find($this->includePaths, $rawPath))
+				if ($foundLayout = $this->findLayout($layoutPath . '.' . $suffix . '.' . $framework . '.php', $layoutId, $hash))
 				{
-					$this->addDebugMessage('<strong>Found layout:</strong> ' . $this->fullPath);
-
-					static::$cache[$layoutId][$hash] = $foundLayout;
-
-					return static::$cache[$layoutId][$hash];
+					return $foundLayout;
+				}
+				if ($foundLayout = $this->findLayout($layoutPath . '.' . $suffix . '.php', $layoutId, $hash))
+				{
+					return $foundLayout;
 				}
 			}
 		}
 
 		// Standard version
-		$rawPath  = str_replace('.', '/', $this->layoutId) . '.php';
-		$this->addDebugMessage('<strong>Searching layout for:</strong> ' . $rawPath);
-
-		$foundLayout = JPath::find($this->includePaths, $rawPath);
-
-		if (!$foundLayout)
+		if ($foundLayout = $this->findLayout($layoutPath . '.' . $framework . '.php', $layoutId, $hash))
 		{
-			$this->addDebugMessage('<strong>Unable to find layout: </strong> ' . $layoutId);
-
-			return null;
+			return $foundLayout;
+		}
+		if ($foundLayout = $this->findLayout($layoutPath . '.php', $layoutId, $hash))
+		{
+			return $foundLayout;
 		}
 
-		$this->addDebugMessage('<strong>Found layout:</strong> ' . $foundLayout);
+		$this->addDebugMessage('<strong>Unable to find layout: </strong> ' . $layoutId);
 
-		static::$cache[$layoutId][$hash] = $foundLayout;
+		return null;
+	}
 
-		return static::$cache[$layoutId][$hash];
+	/**
+	 * Searches for the given path in the included paths of this instance and
+	 * adds it to the local cache if available.
+	 *
+	 * @param    string  $rawPath   The raw path
+	 * @param    string  $layoutId  The layout ID
+	 * @param    string  $hash      The hash
+	 *
+	 * @return   string|boolean
+	 */
+	private function findLayout($rawPath, $layoutId, $hash)
+	{
+		$this->addDebugMessage('<strong>Searching layout for:</strong> ' . $rawPath);
+
+		if ($foundLayout = JPath::find($this->includePaths, $rawPath))
+		{
+			$this->addDebugMessage('<strong>Found layout:</strong> ' . $this->fullPath);
+
+			static::$cache[$layoutId][$hash] = $foundLayout;
+
+			return static::$cache[$layoutId][$hash];
+		}
+
+		return false;
 	}
 
 	/**
@@ -660,4 +681,5 @@ class JLayoutFile extends JLayoutBase
 
 		return $sublayout->render($displayData);
 	}
+
 }
