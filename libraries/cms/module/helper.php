@@ -292,23 +292,26 @@ abstract class JModuleHelper
 			$defaultLayout = ($temp[1]) ? $temp[1] : 'default';
 		}
 
-		// Build the template and base path for the layout
-		$tPath = JPATH_THEMES . '/' . $template . '/html/' . $module . '/' . $layout . '.php';
-		$bPath = JPATH_BASE . '/modules/' . $module . '/tmpl/' . $defaultLayout . '.php';
-		$dPath = JPATH_BASE . '/modules/' . $module . '/tmpl/default.php';
+		$framework = JFactory::getApplication()->getTemplate(true)->params->get('framework');
 
-		// If the template has a layout override use it
-		if (file_exists($tPath))
+		$paths = array(
+				JPATH_THEMES . '/' . $template . '/html/' . $module . '/' . $layout . '.' . $framework . '.php',
+				JPATH_THEMES . '/' . $template . '/html/' . $module . '/' . $layout . '.php',
+				JPATH_BASE . '/modules/' . $module . '/tmpl/' . $defaultLayout . '.' . $framework . '.php',
+				JPATH_BASE . '/modules/' . $module . '/tmpl/' . $defaultLayout . '.php',
+				JPATH_BASE . '/modules/' . $module . '/tmpl/' . '.' . $framework . 'default.php',
+				JPATH_BASE . '/modules/' . $module . '/tmpl/default.php'
+		);
+
+		foreach ($paths as $path)
 		{
-			return $tPath;
+			if (file_exists($path))
+			{
+				return $path;
+			}
 		}
 
-		if (file_exists($bPath))
-		{
-			return $bPath;
-		}
-
-		return $dPath;
+		return JPATH_BASE . '/modules/' . $module . '/tmpl/default.php';
 	}
 
 	/**
