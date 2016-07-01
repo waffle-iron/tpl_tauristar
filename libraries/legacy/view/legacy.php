@@ -641,7 +641,15 @@ class JViewLegacy extends JObject
 		// Load the template script
 		jimport('joomla.filesystem.path');
 		$filetofind = $this->_createFileName('template', array('name' => $file));
-		$this->_template = JPath::find($this->_path['template'], $filetofind);
+		$framework = JFactory::getApplication()->getTemplate(true)->params->get('framework');
+		$this->_template = JPath::find($this->_path['template'], str_replace('.php', '.' . $framework . '.php', $filetofind));
+
+		// If framework specific layout can't be found, fall back to default layout
+		if ($this->_template == false)
+		{
+			$filetofind = $this->_createFileName('template', array('name' => $file));
+			$this->_template = JPath::find($this->_path['template'], $filetofind);
+		}
 
 		// If alternate layout can't be found, fall back to default layout
 		if ($this->_template == false)
