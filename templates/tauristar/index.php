@@ -56,7 +56,7 @@ switch ($params->get('mode', 2))
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" href="#">Project name</a>
+						<a class="navbar-brand" href="#"><?php echo JFactory::getApplication()->getCfg('sitename'); ?></a>
 					</div>
 					<div id="navbar-menu" class="navbar-collapse collapse">
 						<jdoc:include type="modules" name="menu" style="none" />
