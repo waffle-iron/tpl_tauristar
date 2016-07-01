@@ -45,6 +45,7 @@
 				<field name="additional-css" class="" type="textarea" default=""
 					rows="50" cols="50" label="TPL_TAURISTAR_ADDITIONAL_CSS_LABEL"
 					description="TPL_TAURISTAR_ADDITIONAL_CSS_DESC" />
+				<field type="hidden" name="framework" default="bs3" />
 			</fieldset>
 		</fields>
 	</config>
