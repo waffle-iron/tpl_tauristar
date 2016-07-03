@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/Digital-Peak-Incubator/tpl_tauristar.png?label=ready&title=Ready)](https://waffle.io/Digital-Peak-Incubator/tpl_tauristar)
 Joomla! CMS™ [![Analytics](https://ga-beacon.appspot.com/UA-544070-3/joomla-cms/readme)](https://github.com/igrigorik/ga-beacon)
 ====================
 
